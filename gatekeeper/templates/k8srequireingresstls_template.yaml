@@ -1,0 +1,18 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: k8srequireingresstls
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sRequireIngressTLS
+  targets:
+  - target: admission.k8s.gatekeeper.sh
+    rego: |
+      package k8srequireingresstls
+      violation[{"msg": msg}] {
+        input.review.kind.kind == "Ingress"
+        not input.review.object.spec.tls
+        msg := "Ingress must configure TLS"
+      }
