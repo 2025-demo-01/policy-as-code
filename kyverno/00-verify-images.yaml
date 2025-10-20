@@ -1,0 +1,31 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: verify-images
+  annotations:
+    policies.kyverno.io/title: Verify Container Image Signatures
+    policies.kyverno.io/category: Supply Chain Security
+spec:
+  validationFailureAction: Enforce
+  background: true
+  rules:
+  - name: require-cosign-signature
+    match:
+      any:
+      - resources:
+          kinds: ["Pod","Deployment","StatefulSet","DaemonSet","Job","CronJob"]
+    verifyImages:
+    - imageReferences:
+      - "*"
+      attestors:
+      - keys:
+          # 데모용 — CI에서 생성한 공개키를 여기 ConfigMap 또는 KMS로 매핑 권장
+          publicKeys: |
+            -----BEGIN PUBLIC KEY-----
+            MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEk6A0eFRqFz1tGv0oCv3pQVVv1J7k
+            7Jq1Y0+5lW2kQ1j1gBz2N8n8yYvWqHqCsmulC7xQmC9C5i9asamplekeyonly==
+            -----END PUBLIC KEY-----
+      annotations:
+        # 이미지에 SBOM/빌드정보 주석 강제 (없으면 Fail)
+        cosign.sigstore.dev/imageRef: "required"
+      failureAction: "enforce"
