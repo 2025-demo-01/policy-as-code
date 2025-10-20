@@ -1,1 +1,10 @@
-
+# policy-as-code/gatekeeper/constraints/noprivileged_constraint.yaml
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sNoPrivileged
+metadata:
+  name: no-privileged-containers
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
