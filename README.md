@@ -4,7 +4,41 @@
 ArgoCD에 의해 자동  deploy되먀, 모든 변경은 review 승인 후만 반영느는 척.
 
 ---
+# dir 구조
+policy-as-code/
+├─ README.md
+├─ CODEOWNERS
+├─ kyverno/
+│  ├─ disallow-hostpath.yaml
+│  ├─ restrict-privileged.yaml
+│  ├─ enforce-resource-limits.yaml
+│  ├─ enforce-labels.yaml
+│  ├─ require-image-signature.yaml
+│  └─ default-deny-egress.yaml
+├─ gatekeeper/
+│  ├─ templates/
+│  │  ├─ requiredlabels_template.yaml
+│  │  ├─ nolb_template.yaml
+│  │  └─ noprivileged_template.yaml
+│  └─ constraints/
+│     ├─ requiredlabels_constraint.yaml
+│     ├─ nolb_constraint.yaml
+│     └─ noprivileged_constraint.yaml
+├─ supply-chain/
+│  ├─ cosign-verify.yaml
+│  ├─ sbom-gate.yaml
+│  ├─ trivy-scan.yaml
+│  └─ secret-scan.yaml
+├─ sops/
+│  ├─ sops-policy.yaml
+│  └─ sops-example-secret.enc.yaml
+└─ .github/workflows/
+   ├─ policy-lint.yaml
+   └─ notify-security.yaml
 
+
+
+---
 ##  구성
 
 | dir | contents |
