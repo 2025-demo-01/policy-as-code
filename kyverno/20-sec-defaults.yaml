@@ -1,0 +1,26 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: security-defaults
+spec:
+  validationFailureAction: Enforce
+  background: true
+  rules:
+  - name: require-nonroot
+    match: { any: [ { resources: { kinds: ["Pod","Deployment","StatefulSet","DaemonSet","Job","CronJob"] } } ] }
+    validate:
+      message: "runAsNonRoot & readOnlyRootFilesystem required"
+      pattern:
+        spec:
+          containers:
+          - name: "*"
+            securityContext:
+              runAsNonRoot: true
+              readOnlyRootFilesystem: true
+  - name: default-seccomp
+    match: { any: [ { resources: { kinds: ["Pod"] } } ] }
+    mutate:
+      patchStrategicMerge:
+        metadata:
+          annotations:
+            seccomp.security.alpha.kubernetes.io/pod: "runtime/default"
