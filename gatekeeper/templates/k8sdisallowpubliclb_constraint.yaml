@@ -1,0 +1,11 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sDisallowPublicLB
+metadata:
+  name: disallow-public-lb
+spec:
+  match:
+    kinds:
+    - apiGroups: [""]
+      kinds: ["Service"]
+  parameters:
+    allowInternal: true
