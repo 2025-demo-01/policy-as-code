@@ -1,0 +1,4 @@
+severity: "CRITICAL,HIGH"
+exitCode: 1
+ignoreUnfixed: true
+vulnType: "os,library"
