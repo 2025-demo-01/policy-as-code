@@ -1,1 +1,31 @@
-
+# policy-as-code/supply-chain/trivy-scan.yaml
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: trivy-scan
+  namespace: policy-system
+spec:
+  schedule: "0 3 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: trivy
+              image: aquasec/trivy:latest
+              args:
+                - image
+                - "--severity"
+                - "CRITICAL,HIGH"
+                - "--exit-code"
+                - "1"
+                - "--ignore-unfixed"
+                - "--timeout"
+                - "5m"
+                - "registry.upx.exchange/demo/app:latest" # 임시
+              env:
+                - name: TRIVY_USERNAME
+                  value: "sophielog"
+                - name: TRIVY_PASSWORD
+                  value: "sophielog"
+          restartPolicy: OnFailure
