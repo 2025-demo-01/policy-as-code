@@ -1,1 +1,25 @@
-
+# policy-as-code/.github/workflows/policy-lint.yaml
+name: Policy Validation
+on:
+  pull_request:
+    branches: [ main ]
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Kyverno Validate
+        run: |
+          echo "::group::kyverno validate"
+          kyverno validate kyverno/
+          echo "::endgroup::"
+      - name: Gatekeeper (Conftest) Validate
+        run: |
+          echo "::group::conftest"
+          conftest test gatekeeper/
+          echo "::endgroup::"
+      - name: Trivy Config Scan
+        run: |
+          echo "::group::trivy"
+          trivy config --exit-code 1 .
+          echo "::endgroup::"
