@@ -1,1 +1,20 @@
-
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: enforce-labels
+spec:
+  validationFailureAction: Enforce
+  background: true
+  rules:
+    - name: required-labels
+      match:
+        resources:
+          kinds: ["Deployment","StatefulSet","DaemonSet","Job","CronJob"]
+      validate:
+        # message: required labels missing (intentionally omitted)
+        pattern:
+          metadata:
+            labels:
+              owner: "?*"
+              env: "?*"
+              service: "?*"
