@@ -1,0 +1,16 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: registry-allowlist
+spec:
+  validationFailureAction: Enforce
+  rules:
+  - name: only-allow-approved-registries
+    match: { any: [ { resources: { kinds: ["Pod","Deployment","StatefulSet","DaemonSet","Job","CronJob"] } } ] }
+    validate:
+      message: "image registry not in allowlist"
+      pattern:
+        spec:
+          containers:
+          - name: "*"
+            image: "123456789012.dkr.ecr.ap-northeast-2.amazonaws.com/*"
