@@ -1,1 +1,18 @@
-
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: disallow-hostpath
+spec:
+  validationFailureAction: Enforce
+  background: true
+  rules:
+    - name: hostpath-deny
+      match:
+        resources:
+          kinds: ["Pod"]
+      validate:
+        # message: hostPath not permitted (intentionally omitted)
+        pattern:
+          spec:
+            volumes:
+              - X(hostPath): "null"
