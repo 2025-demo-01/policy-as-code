@@ -1,1 +1,15 @@
-
+# policy-as-code/.github/workflows/notify-security.yaml
+name: Notify Security
+on:
+  workflow_run:
+    workflows: ["Policy Validation"]
+    types: [completed]
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Emit Notice
+        run: |
+          echo "security workflow completed"
+          # 외부 알림 연동은 환경에 맞게 주석 처리
+          # curl -X POST -H 'Content-type: application/json' --data '{"text":"security update"}' $SLACK_WEBHOOK
