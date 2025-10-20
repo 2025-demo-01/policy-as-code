@@ -16,5 +16,6 @@ spec:
           svc := input.review.object
           svc.kind == "Service"
           svc.spec.type == "LoadBalancer"
+          # 외부 공개 판단 로직은 환경에 맞게 확장
           msg := "policy violation"
         }
