@@ -1,1 +1,10 @@
-
+# policy-as-code/gatekeeper/constraints/nolb_constraint.yaml
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: DisallowPublicLB
+metadata:
+  name: disallow-public-loadbalancer
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Service"]
