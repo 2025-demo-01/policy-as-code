@@ -1,0 +1,24 @@
+# policy-as-code/kyverno/default-deny-egress.yaml
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: default-deny-egress
+spec:
+  validationFailureAction: Enforce
+  background: true
+  rules:
+    - name: gen-egress-default
+      match:
+        resources:
+          kinds: ["NetworkPolicy"]
+      generate:
+        kind: NetworkPolicy
+        name: deny-external-egress
+        namespace: "{{request.namespace}}"
+        synchronize: true
+        data:
+          metadata: {}
+          spec:
+            podSelector: {}
+            policyTypes: ["Egress"]
+            egress: []
