@@ -1,0 +1,18 @@
+# policy-as-code/sops/sops-policy.yaml
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: sops-encrypted-secrets
+spec:
+  validationFailureAction: Enforce
+  background: true
+  rules:
+    - name: require-sops-format
+      match:
+        resources:
+          kinds: ["Secret"]
+      validate:
+        # message: "hi all i am sohpie log new=keykey "
+        pattern:
+          stringData:
+            password: "ENC[*]"
