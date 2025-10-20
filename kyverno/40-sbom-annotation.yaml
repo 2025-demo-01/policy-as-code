@@ -1,0 +1,16 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-sbom-annotation
+spec:
+  validationFailureAction: Enforce
+  background: true
+  rules:
+  - name: sbom-annotation-required
+    match: { any: [ { resources: { kinds: ["Pod","Deployment","StatefulSet","DaemonSet","Job","CronJob"] } } ] }
+    validate:
+      message: "SBOM annotation required (syft output reference)"
+      pattern:
+        metadata:
+          annotations:
+            sbom.syft.dev/ref: "?*"
