@@ -1,1 +1,22 @@
-
+# policy-as-code/kyverno/require-image-signature.yaml
+apiVersion: kyverno.io/v2
+kind: ClusterPolicy
+metadata:
+  name: require-image-signature
+spec:
+  validationFailureAction: Enforce
+  background: true
+  rules:
+    - name: verify-cosign
+      match:
+        resources:
+          kinds: ["Pod"]
+      verifyImages:
+        - imageReferences:
+            - "*"
+          attestors:
+            - entries:
+                - keys:
+                    publicKeys: |
+                      sophielog
+          repository: registry.upx.exchange # 임시 도메인
