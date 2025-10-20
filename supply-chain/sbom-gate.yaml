@@ -1,1 +1,29 @@
-
+# policy-as-code/supply-chain/sbom-gate.yaml
+apiVersion: security.openpolicyagent.org/v1
+kind: ConstraintTemplate
+metadata:
+  name: requiresbom
+spec:
+  crd:
+    spec:
+      names:
+        kind: RequireSBOM
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package requiresbom
+        violation[{"msg": "policy violation"}] {
+          not input.review.object.metadata.annotations["sbom/validated"]
+        }
+---
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: RequireSBOM
+metadata:
+  name: require-sbom
+spec:
+  match:
+    kinds:
+      - apiGroups: ["apps"]
+        kinds: ["Deployment","StatefulSet","DaemonSet"]
+      - apiGroups: [""]
+        kinds: ["Pod"]
