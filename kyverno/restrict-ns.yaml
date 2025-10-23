@@ -1,0 +1,19 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: restrict-ns-deploy
+spec:
+  validationFailureAction: enforce
+  rules:
+    - name: only-allowed-ns
+      match:
+        resources:
+          kinds: ["Deployment","StatefulSet","DaemonSet","Job","CronJob"]
+      preconditions:
+        all:
+          - key: "{{ request.namespace }}"
+            operator: AnyIn
+            value: ["gateway","trading","policy","observability","dr","istio-system","argocd"]
+      validate:
+        message: "Not an allowed namespace."
+        deny: { conditions: { any: [ { key: "{{request.namespace}}", operator: NotIn, value: ["gateway","trading","policy","observability","dr","istio-system","argocd"] } ] } }
