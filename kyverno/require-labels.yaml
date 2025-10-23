@@ -1,0 +1,16 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-standard-labels
+spec:
+  validationFailureAction: enforce
+  rules:
+    - name: require-app-owner
+      match: { resources: { kinds: ["Deployment","StatefulSet","DaemonSet"] } }
+      validate:
+        message: "app.kubernetes.io/name and owner label required"
+        pattern:
+          metadata:
+            labels:
+              app.kubernetes.io/name: "?*"
+              owner: "?*"
